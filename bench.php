@@ -37,6 +37,7 @@ echo "Starting benchmark...\n";
 
 
 $i = 0;
+$startGlobal = microtime(true);
 foreach ($urls as $url) {
     $start = microtime(true);
     $ch = curl_init($url);
@@ -50,7 +51,12 @@ foreach ($urls as $url) {
     }
     $results[$url][] = $end - $start;
     $avancement = $i/count($urls)*100;
-    printf("[%2d %%] %5.3f %-60s\r", $avancement, $end-$start, $url);
+
+    // calculate time remaining...
+    $endGlobal = microtime(true);
+    $timeElapsed = $endGlobal - $startGlobal;
+    $timeRemaining = ($timeElapsed / $avancement) * (100 - $avancement);
+    printf("[%2d %%  %3d s] %5.3f %-60s\r", $avancement, $timeRemaining, $end-$start, $url);
 
     $i++;
 
